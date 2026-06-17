@@ -120,6 +120,23 @@ def build_prompt(job, direction, company, level, difficulty, output_type):
 """
     return prompt
 
+# =========================
+# 5.5 保存历史记录的函数
+# =========================
+def save_history(result):
+    history_dir = "history"
+
+    if not os.path.exists(history_dir):
+        os.makedirs(history_dir)
+
+    file_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+    file_name = f"interview_prepare_{file_time}.txt"
+    file_path = os.path.join(history_dir, file_name)
+
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write(result)
+
+    return file_path
 
 # =========================
 # 6. 调用 AI 的函数
@@ -162,6 +179,7 @@ if st.button("开始生成面试准备内容", type="primary"):
         with st.spinner("AI 正在生成中，请稍等..."):
             try:
                 result = call_deepseek(prompt)
+                saved_path = save_history(result)
 
                 st.success("生成完成！")
                 st.subheader("生成结果")
